@@ -132,6 +132,33 @@ function ArticleById() {
       )}
       
       {/* form to add comment if role is USER */}
+       {/* USER actions */}
+      {user?.role === "USER" && (
+        <div className={articleActions}>
+          <form onSubmit={handleSubmit(addComment)}>
+            <input
+              type="text"
+              {...register("comment")}
+              className={inputClass}
+              placeholder="Write your comment here..."
+            />
+            <button type="submit" className="bg-amber-600 text-white px-5 py-2 rounded-2xl mt-5">
+              Add comment
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* comments */}
+      {article.comments.map((comment) => (
+        <div className="bg-gray-300 p-6 rounded-2xl mt-4">
+          <p className="uppercase text-pink-400 font-bold mb-3">
+          {comment.user?.email}
+          </p>
+          <p>{comment.comment}</p>
+        </div>
+      ))}
+
 
       {/* Footer */}
       <div className={articleFooter}>Last updated: {formatDate(article.updatedAt)}</div>
