@@ -12,8 +12,8 @@ import {
   loadingClass,
   errorClass,
   emptyStateClass,
+  articleStatusActive,
   articleStatusDeleted,
-  articleStatusActive
 } from "../styles/common";
 
 function AuthorArticles() {
@@ -24,21 +24,29 @@ function AuthorArticles() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  console.log("user in author profile",user)
-  
+  console.log("user in author profile", user);
+
   useEffect(() => {
-    if (!user) return;
+    // ✅ FIX: use user.userId instead of user._id
+    const authorId = user?.userId;
+
+    if (!authorId) return; // 🚫 prevents undefined API call
 
     const getAuthorArticles = async () => {
       setLoading(true);
 
       try {
-        const res = await axios.get(`http://localhost:4000/author-api/articles/${user.userId}`, { withCredentials: true });
+        const res = await axios.get(
+          `http://localhost:4000/author-api/articles/${authorId}`,
+          {
+            withCredentials: true, // for cookies
+          }
+        );
 
         setArticles(res.data.payload);
       } catch (err) {
         console.log(err);
-        setError(err.response?.data?.error || "Failed to fetch articles");
+        setError(err.response?.data?.message || "Failed to fetch articles");
       } finally {
         setLoading(false);
       }
@@ -64,15 +72,28 @@ function AuthorArticles() {
   if (error) return <p className={errorClass}>{error}</p>;
 
   if (articles.length === 0) {
-    return <div className={emptyStateClass}>You haven't published any articles yet.</div>;
+    return (
+      <div className={emptyStateClass}>
+        You haven't published any articles yet.
+      </div>
+    );
   }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {articles.map((article) => (
-        <div key={article._id} className={`${articleCardClass} relative flex flex-col`}>
+        <div
+          key={article._id}
+          className={`${articleCardClass} relative flex flex-col`}
+        >
           {/* Status Badge */}
-          <span className={article.isArticleActive ? articleStatusActive : articleStatusDeleted}>
+          <span
+            className={
+              article.isArticleActive
+                ? articleStatusActive
+                : articleStatusDeleted
+            }
+          >
             {article.isArticleActive ? "ACTIVE" : "DELETED"}
           </span>
 
@@ -81,10 +102,15 @@ function AuthorArticles() {
 
             <p className={articleTitle}>{article.title}</p>
 
-            <p className={articleExcerpt}>{article.content.slice(0, 60)}...</p>
+            <p className={articleExcerpt}>
+              {article.content.slice(0, 60)}...
+            </p>
           </div>
 
-          <button className={`${ghostBtn} mt-auto pt-4`} onClick={() => openArticle(article)}>
+          <button
+            className={`${ghostBtn} mt-auto pt-4`}
+            onClick={() => openArticle(article)}
+          >
             Read Article →
           </button>
         </div>

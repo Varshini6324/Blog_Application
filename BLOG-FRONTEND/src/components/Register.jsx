@@ -30,12 +30,15 @@ function Register() {
         const formData = new FormData();
         //get user object
         let { role, profileImageUrl, ...userObj } = newUser;
-        //add all fields except profilePic to FormData object
+        //add role override
+        userObj.role = role.toUpperCase();
+        //add all fields to FormData object
         Object.keys(userObj).forEach((key) => {
         formData.append(key, userObj[key]);
         });
-        // add profilePic to Formdata object
-        formData.append("profileImageUrl", profileImageUrl[0]);
+        if (profileImageUrl && profileImageUrl[0]) {
+          formData.append("profileImageUrl", profileImageUrl[0]);
+        }
 
     
 
@@ -47,7 +50,12 @@ function Register() {
 
         let resObj = await axios.post(
           "http://localhost:4000/user-api/users",
-          formData
+          formData,
+          { 
+            headers: { 
+              'Content-Type': 'multipart/form-data' 
+            } 
+          }
         );
 
         if(resObj.status === 201){
@@ -60,7 +68,12 @@ function Register() {
 
         let resObj = await axios.post(
           "http://localhost:4000/author-api/users",
-          formData
+          formData,
+          { 
+            headers: { 
+              'Content-Type': 'multipart/form-data' 
+            } 
+          }
         );
 
         if(resObj.status === 201){

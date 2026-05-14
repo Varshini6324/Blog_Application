@@ -17,11 +17,12 @@ import {
   deleteBtn,
   loadingClass,
   errorClass,
+  emptyStateClass,
 } from "../styles/common.js";
+import CommentBox from "./CommentBox.jsx";
 
 function ArticleById() {
   const { id } = useParams();
-  console.log(id)
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -38,18 +39,28 @@ function ArticleById() {
       setLoading(true);
 
       try {
-        const res = await axios.get(`http://localhost:4000/user-api/article/${id}`, { withCredentials: true });
+        const res = await axios.get(
+          `http://localhost:4000/user-api/articles/${id}`,
+          {
+            withCredentials: true,
+          }
+        );
 
-        setArticle(res.data.payload);
+        setArticle(res.data?.payload || null);
       } catch (err) {
-        setError(err.response?.data?.error);
+        setError(
+          err?.response?.data?.message ||
+            err?.response?.data?.error ||
+            err?.message ||
+            "Failed to load article"
+        );
       } finally {
         setLoading(false);
       }
     };
 
     getArticle();
-  }, [id]);
+  }, [id, article]);
 
   const formatDate = (date) => {
     return new Date(date).toLocaleString("en-IN", {
@@ -59,66 +70,86 @@ function ArticleById() {
     });
   };
 
-  // delete & restore article
   const toggleArticleStatus = async () => {
     const newStatus = !article.isArticleActive;
 
-    const confirmMsg = newStatus ? "Restore this article?" : "Delete this article?";
+    const confirmMsg = newStatus
+      ? "Restore this article?"
+      : "Delete this article?";
+
     if (!window.confirm(confirmMsg)) return;
 
     try {
       const res = await axios.patch(
         `http://localhost:4000/author-api/articles/${id}/status`,
         { isArticleActive: newStatus },
-        { withCredentials: true },
+        { withCredentials: true }
       );
 
-      console.log("SUCCESS:", res.data);
-
       setArticle(res.data.payload);
-
       toast.success(res.data.message);
     } catch (err) {
-      console.log("ERROR:", err.response);
+      const msg = err?.response?.data?.message;
 
-      const msg = err.response?.data?.message;
-
-      if (err.response?.status === 400) {
-        toast(msg); // already deleted/active case
+      if (err?.response?.status === 400) {
+        toast.error(msg);
       } else {
         setError(msg || "Operation failed");
       }
     }
   };
 
-  
   const editArticle = (articleObj) => {
-    navigate("/edit-article", { state: articleObj });
+    navigate(`/edit-article/${articleObj._id}`);
   };
 
-  if (loading) return <p className={loadingClass}>Loading article...</p>;
-  if (error) return <p className={errorClass}>{error}</p>;
-  if (!article) return null;
+  if (loading)
+    return (
+      <p className={loadingClass}>
+        Loading article...
+      </p>
+    );
+
+  if (error)
+    return (
+      <p className={errorClass}>
+        {error}
+      </p>
+    );
+
+  if (!article)
+    return (
+      <p className={emptyStateClass}>
+        No article found.
+      </p>
+    );
 
   return (
-    <div className={articlePageWrapper}>
-      {/* Header */}
+    <div
+      className={`${articlePageWrapper} bg-[#088395] border border-[#088395]/30 rounded-2xl p-8 max-w-5xl mx-auto mt-10`}
+    >
       <div className={articleHeader}>
-        <span className={articleCategory}>{article.category}</span>
+        <span className={articleCategory}>
+          {article.category}
+        </span>
 
-        <h1 className={`${articleMainTitle} uppercase`}>{article.title}</h1>
+        <h1 className={`${articleMainTitle} uppercase mt-3`}>
+          {article.title}
+        </h1>
 
-        <div className={articleAuthorRow}>
-          <div className={authorInfo}>✍️ {article.author?.firstName || "Author"}</div>
+        <div className={`${articleAuthorRow} mt-4`}>
+          <div className={authorInfo}>
+            ✍️ {article.author?.firstName || "Author"}
+          </div>
 
           <div>{formatDate(article.createdAt)}</div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className={articleContent}>{article.content}</div>
+      <div className={articleContent}>
+        {article.content}
+      </div>
 
-      {/* AUTHOR actions */}
       {user?.role === "AUTHOR" && (
         <div className={articleActions}>
           <button className={editBtn} onClick={() => editArticle(article)}>
@@ -130,38 +161,42 @@ function ArticleById() {
           </button>
         </div>
       )}
-      
-      {/* form to add comment if role is USER */}
-       {/* USER actions */}
+
       {user?.role === "USER" && (
-        <div className={articleActions}>
-          <form onSubmit={handleSubmit(addComment)}>
-            <input
-              type="text"
-              {...register("comment")}
-              className={inputClass}
-              placeholder="Write your comment here..."
-            />
-            <button type="submit" className="bg-amber-600 text-white px-5 py-2 rounded-2xl mt-5">
-              Add comment
-            </button>
-          </form>
+        <div className={`${articleActions} mt-10 flex flex-col gap-3`}>
+          <h2 className="text-xl font-bold text-[#7ab2b2]">Add a comment</h2>
+
+          <CommentBox
+            articleId={id}
+            onCommentAdded={(nextArticle) => setArticle(nextArticle)}
+          />
         </div>
       )}
 
-      {/* comments */}
-      {article.comments.map((comment) => (
-        <div className="bg-gray-300 p-6 rounded-2xl mt-4">
-          <p className="uppercase text-pink-400 font-bold mb-3">
-          {comment.user?.email}
-          </p>
-          <p>{comment.comment}</p>
+      {article.comments?.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold text-white mb-6">
+            Comments
+          </h2>
+
+          {article.comments.map((comment) => (
+            <div
+              className="bg-[#088395]/20 border border-[#088395]/30 p-6 rounded-2xl mt-4"
+              key={comment?._id || comment?.comment}
+            >
+              <p className="uppercase text-white font-bold mb-3">
+                {comment.user?.email}
+              </p>
+
+              <p className="text-white/80">{comment.comment}</p>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
 
-
-      {/* Footer */}
-      <div className={articleFooter}>Last updated: {formatDate(article.updatedAt)}</div>
+      <div className={articleFooter}>
+        Last updated: {formatDate(article.updatedAt)}
+      </div>
     </div>
   );
 }

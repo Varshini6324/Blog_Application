@@ -78,7 +78,7 @@ Content-Type: application/json
 {
     "author":"69c4c81f23692bf04bb77a35",
     "articleId":"69c4e86c23692bf04bb77a70",
-    "title":"test2 test article",
+    "title":"test2 tests article",
     "category":"programmming",
     "content":"content of test2 article"
 }

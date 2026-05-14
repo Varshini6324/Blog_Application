@@ -38,39 +38,52 @@ function UserDashboard() {
   
   return (
     <div className="p-5">
-      <div className="flex justify-between mb-6">
-        <div >
+      <div className="flex justify-end mb-6">
+        <div className="flex flex-col items-end">
+
+
+          <div className="w-16 h-16">
+            <img
+              src={currentUser?.profileImageUrl || 'https://via.placeholder.com/80x80/6b7280/ffffff?text=👤'}
+              alt="Profile"
+              className="w-full h-full object-cover rounded-full shadow-md bg-white"
+            />
+          </div>
+
+
+        </div>
+
+        {/* Right: user details */}
+        <div className="flex-1 pl-6 text-right">
           <h1 className="text-xl lg:text-2xl font-black text-gray-900 drop-shadow-sm">
             WELCOME
           </h1>
           <h2 className="text-lg lg:text-xl font-bold text-slate-800 drop-shadow-sm">
             {currentUser?.firstName || currentUser?.name || 'User'}
           </h2>
-          <div className='w-16 h-16'>
-            <img 
-              src={currentUser?.profileImageUrl || 'https://via.placeholder.com/80x80/6b7280/ffffff?text=👤'} 
-              alt="Profile" 
-              className="w-full h-full object-cover rounded-full shadow-md bg-white"
-            />
-          </div>
         </div>
-        
-          
+      </div>
 
-          
-  
-    </div>
-    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-      {articles.map((article)=>(
-        <div key={article._id} className={cardClass}>
-        <h3 className="text-lg font-semibold mb-2">{article.title}</h3>
-        <p className="text-gray-600 text-sm">{article.content?.substring(0,120)}...</p>
-        <p className="text-gray-400 text-xs mt-3">Category: {article.category}</p>
-        
-        </div>
-      ))}
-    </div>
-    <button className={submitBtn} onClick={onLogout}>Logout</button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {articles.map((article) => (
+          <div
+            key={article._id}
+            className={cardClass}
+            onClick={() => navigate(`/article/${article._id}`)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                navigate(`/article/${article._id}`)
+              }
+            }}
+          >
+            <h3 className="text-lg font-semibold mb-2">{article.title}</h3>
+            <p className="text-gray-600 text-sm">{article.content?.substring(0, 120)}...</p>
+            <p className="text-gray-400 text-xs mt-3">Category: {article.category}</p>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

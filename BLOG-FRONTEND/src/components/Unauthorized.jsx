@@ -13,10 +13,10 @@ const Unauthorized = ({ redirectTo = "/login", delay = 2000 }) => {
   }, [navigate, redirectTo, delay]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-red-600 mb-4">403 - Unauthorized</h1>
-      <p className="text-lg text-gray-700 mb-2">You don’t have permission to access this page.</p>
-      <p className="text-sm text-gray-500">Redirecting...</p>
+    <div className="min-h-screen flex flex-col justify-center items-center bg-black">
+      <h1 className="text-4xl font-bold text-white mb-4">403 - Unauthorized</h1>
+      <p className="text-lg text-white/80 mb-2">You don’t have permission to access this page.</p>
+      <p className="text-sm text-white/60">Redirecting...</p>
     </div>
   );
 };
