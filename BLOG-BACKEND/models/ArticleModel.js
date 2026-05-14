@@ -1,15 +1,18 @@
 import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
 //Create user comment schema
-const userCommentSchema = new Schema({
+const commentSchema = new mongoose.Schema({
   user: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "user",
   },
   comment: {
     type: String,
+    required: true,
   },
 });
+
 
 //create article schema
 const articleSchema = new Schema(
@@ -31,7 +34,7 @@ const articleSchema = new Schema(
       type: String,
       required: [true, "Content is required"],
     },
-    comments: [userCommentSchema],
+    comments: [commentSchema],
     isArticleActive: {
       type: Boolean,
       default: true,

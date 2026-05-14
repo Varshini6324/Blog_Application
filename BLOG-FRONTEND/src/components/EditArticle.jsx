@@ -33,7 +33,6 @@ function EditArticle() {
     formState: { errors },
   } = useForm();
 
-  // Auth guard + fetch article if needed
   useEffect(() => {
     if (!user || user.role !== "AUTHOR") {
       toast.error("Access denied. Authors only.");
@@ -65,7 +64,6 @@ function EditArticle() {
     };
 
     if (location.state?.title) {
-      // Use state if available (back compat)
       setArticle(location.state);
       setValue("title", location.state.title);
       setValue("category", location.state.category);
@@ -91,42 +89,74 @@ function EditArticle() {
   };
 
   if (loading) {
-    return <div className={`${articlePageWrapper} mt-10`}>Loading...</div>;
+    return (
+      <div className="text-white/60 text-sm animate-pulse text-center py-10 mt-10">
+        Loading...
+      </div>
+    );
   }
 
   return (
-    <div className={`${formCard} mt-10`}>
-      <h2 className={formTitle}>Edit Article</h2>
+    <div className="bg-[#088395] border border-[#088395]/30 rounded-2xl p-10 max-w-4xl mx-auto mt-10">
+      <h2 className="text-2xl font-bold text-white tracking-tight text-center mb-7">
+        Edit Article
+      </h2>
 
       <form onSubmit={handleSubmit(updateArticle)}>
         {/* Title */}
-        <div className={formGroup}>
-          <label className={labelClass}>Title</label>
-          <input className={inputClass} {...register("title", { required: "Title required" })} />
-          {errors.title && <p className={errorClass}>{errors.title.message}</p>}
+        <div className="mb-4">
+          <label className="text-xs font-medium text-white/70 mb-1.5 block">Title</label>
+          <input
+            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-white/40 focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/20 transition"
+            {...register("title", { required: "Title required" })}
+          />
+          {errors.title && (
+            <p className="bg-white/5 text-white border border-white/20 rounded-xl px-4 py-3 text-sm mt-1">
+              {errors.title.message}
+            </p>
+          )}
         </div>
 
         {/* Category */}
-        <div className={formGroup}>
-          <label className={labelClass}>Category</label>
-          <select className={inputClass} {...register("category", { required: "Category required" })}>
-            <option value="">Select category</option>
-            <option value="technology">Technology</option>
-            <option value="programming">Programming</option>
-            <option value="ai">AI</option>
-            <option value="web-development">Web Development</option>
+        <div className="mb-4">
+          <label className="text-xs font-medium text-white/70 mb-1.5 block">Category</label>
+          <select
+            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/20 transition"
+            {...register("category", { required: "Category required" })}
+          >
+            <option value="" className="bg-[#088395]">Select category</option>
+            <option value="technology" className="bg-[#088395]">Technology</option>
+            <option value="programming" className="bg-[#088395]">Programming</option>
+            <option value="ai" className="bg-[#088395]">AI</option>
+            <option value="web-development" className="bg-[#088395]">Web Development</option>
           </select>
-          {errors.category && <p className={errorClass}>{errors.category.message}</p>}
+          {errors.category && (
+            <p className="bg-white/5 text-white border border-white/20 rounded-xl px-4 py-3 text-sm mt-1">
+              {errors.category.message}
+            </p>
+          )}
         </div>
 
         {/* Content */}
-        <div className={formGroup}>
-          <label className={labelClass}>Content</label>
-          <textarea rows="14" className={inputClass} {...register("content", { required: "Content required" })} />
-          {errors.content && <p className={errorClass}>{errors.content.message}</p>}
+        <div className="mb-4">
+          <label className="text-xs font-medium text-white/70 mb-1.5 block">Content</label>
+          <textarea
+            rows="14"
+            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-white/40 focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/20 transition"
+            {...register("content", { required: "Content required" })}
+          />
+          {errors.content && (
+            <p className="bg-white/5 text-white border border-white/20 rounded-xl px-4 py-3 text-sm mt-1">
+              {errors.content.message}
+            </p>
+          )}
         </div>
 
-        <button type="submit" className={submitBtn} disabled={loading}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-white text-[#088395] font-semibold py-2.5 rounded-full hover:bg-white/90 transition-colors cursor-pointer mt-2 text-sm tracking-tight disabled:opacity-50"
+        >
           Update Article
         </button>
       </form>

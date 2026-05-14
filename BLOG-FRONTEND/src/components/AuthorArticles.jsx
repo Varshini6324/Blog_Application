@@ -24,13 +24,10 @@ function AuthorArticles() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  console.log("user in author profile", user);
-
   useEffect(() => {
-    // ✅ FIX: use user.userId instead of user._id
     const authorId = user?.userId;
 
-    if (!authorId) return; // 🚫 prevents undefined API call
+    if (!authorId) return;
 
     const getAuthorArticles = async () => {
       setLoading(true);
@@ -39,13 +36,12 @@ function AuthorArticles() {
         const res = await axios.get(
           `http://localhost:4000/author-api/articles/${authorId}`,
           {
-            withCredentials: true, // for cookies
+            withCredentials: true,
           }
         );
 
         setArticles(res.data.payload);
       } catch (err) {
-        console.log(err);
         setError(err.response?.data?.message || "Failed to fetch articles");
       } finally {
         setLoading(false);
@@ -84,31 +80,35 @@ function AuthorArticles() {
       {articles.map((article) => (
         <div
           key={article._id}
-          className={`${articleCardClass} relative flex flex-col`}
+          className="relative flex flex-col bg-[#088395] border border-[#088395]/30 rounded-2xl p-6 hover:bg-[#088395]/90 transition-colors duration-200 cursor-pointer"
         >
           {/* Status Badge */}
           <span
-            className={
+            className={`absolute top-3 right-3 text-[10px] font-semibold px-2 py-1 rounded-full border ${
               article.isArticleActive
-                ? articleStatusActive
-                : articleStatusDeleted
-            }
+                ? "bg-white/10 text-white border-white/20"
+                : "bg-red-500/20 text-red-200 border-red-400/30"
+            }`}
           >
             {article.isArticleActive ? "ACTIVE" : "DELETED"}
           </span>
 
           <div className="flex flex-col gap-2">
-            <p className={articleMeta}>{article.category}</p>
+            <p className="text-xs text-white/60 uppercase tracking-widest font-semibold">
+              {article.category}
+            </p>
 
-            <p className={articleTitle}>{article.title}</p>
+            <p className="text-base font-semibold text-white leading-snug tracking-tight">
+              {article.title}
+            </p>
 
-            <p className={articleExcerpt}>
-              {article.content.slice(0, 60)}...
+            <p className="text-sm text-white/80 leading-relaxed">
+              {article.content?.slice(0, 60) ?? ""}...
             </p>
           </div>
 
           <button
-            className={`${ghostBtn} mt-auto pt-4`}
+            className="text-white/70 font-medium hover:text-white transition-colors cursor-pointer text-sm mt-auto pt-4 text-left"
             onClick={() => openArticle(article)}
           >
             Read Article →

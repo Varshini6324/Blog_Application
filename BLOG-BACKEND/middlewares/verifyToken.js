@@ -18,7 +18,7 @@ export const verifyToken = (...allowedRoles) => {
       if (!allowedRoles.includes(decodedToken.role)) {
         return res.status(403).json({ message: "Forbidden. You don't have permission" });
       }
-
+      
       // Attach user info to req for use in routes
       req.user = decodedToken;
 

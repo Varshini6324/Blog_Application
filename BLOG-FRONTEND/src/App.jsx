@@ -6,7 +6,7 @@ import Login from './components/Login'
 import AddArticle from './components/AddArticle'
 import UserDashboard from './components/UserDashboard'
 import AdminDashboard from './components/AdminDashboard'
-import {Toaster} from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 import ProtectedRoute from './components/ProtectedRoute'
 import ArticleById from './components/ArticleById'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -34,10 +34,6 @@ function App() {
           element: <Login />,
         },
         {
-          path: 'addarticle',
-          element: <AddArticle />,
-        },
-        {
           path: 'userdashboard',
           element: (
             <ProtectedRoute allowedRoles={['USER']}>
@@ -46,24 +42,36 @@ function App() {
           ),
         },
         {
+          // AuthorProfile is the layout — its children render inside <Outlet />
           path: 'authordashboard',
           element: (
             <ProtectedRoute allowedRoles={['AUTHOR']}>
               <AuthorProfile />
             </ProtectedRoute>
           ),
+          children: [
+            {
+              // Default: /authordashboard → shows AuthorArticles
+              index: true,
+              element: <AuthorArticles />,
+            },
+            {
+              path: 'articles',
+              element: <AuthorArticles />,
+            },
+            {
+              path: 'addarticle',
+              element: <AddArticle />,
+            },
+          ],
         },
         {
           path: 'admindashboard',
           element: <AdminDashboard />,
         },
         {
-          path: '/article/:id',
+          path: 'article/:id',
           element: <ArticleById />,
-        },
-        {
-          path: '/articles',
-          element: <AuthorArticles />,
         },
         {
           path: 'edit-article/:id',
@@ -72,6 +80,7 @@ function App() {
       ],
     },
   ])
+
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
@@ -81,4 +90,3 @@ function App() {
 }
 
 export default App
-

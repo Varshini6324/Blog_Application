@@ -68,18 +68,43 @@ userRoute.get('/articles/:articleId',async(req,res)=>{
 })
 
 //Add comment to an article
+userRoute.post(
+  "/articles/:articleId",
+  verifyToken("USER"),
+  async (req, res) => {
+    try {
+      const { articleId } = req.params;
+      const { comment } = req.body;
 
-userRoute.post('/articles/:articleId',verifyToken("USER"),async(req,res)=>{
-    const { articleId } = req.params
-    let {comment}=req.body
-    let articleOfDB=await ArticleModel.findOne({_id:articleId})
-    if(!articleOfDB){
-        return res.status(404).json({message:"Article not found"})
+      if (!comment || !comment.trim()) {
+        return res.status(400).json({ message: "Comment cannot be empty" });
+      }
+
+      const article = await ArticleModel.findById(articleId);
+      if (!article) {
+        return res.status(404).json({ message: "Article not found" });
+      }
+
+      article.comments.push({
+        user: req.user.userId,
+        comment: comment.trim(),
+      });
+
+      await article.save();
+
+      const nextArticle = await ArticleModel.findById(articleId)
+        .populate("comments.user", "firstName email");
+
+      return res.status(201).json({
+        message: "Comment added",
+        payload: nextArticle,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: err.message || "Server side error",
+      });
     }
-    //update the article
-    let updatedArticle=await ArticleModel.findByIdAndUpdate(articleId,
-        {$push:{ comments:{user, comment }}},
-        { new:true}).populate("");
-        //send res(updated article)
-     res.status(200).json({message:"Article updated",payload:updatedArticle})
-})
+  }
+);
+

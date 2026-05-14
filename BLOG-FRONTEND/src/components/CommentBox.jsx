@@ -29,12 +29,12 @@ function CommentBox({ articleId, onCommentAdded }) {
     try {
       setSubmitting(true);
 
-      const res = await axios.put(
-        "/user-api/articles",
-        { user: user._id, articleId, comment: trimmed },
+      const res = await axios.post(
+        `http://localhost:4000/user-api/articles/${articleId}`,
+        { comment: trimmed, user: user._id },
         { withCredentials: true }
       );
-
+      console.log("comment:", comment);
       toast.success(res.data?.message || "Comment added");
 
       const nextArticle = res.data?.payload || res.data?.article || null;
@@ -44,12 +44,16 @@ function CommentBox({ articleId, onCommentAdded }) {
 
       setComment("");
     } catch (err) {
-      const msg =
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        err?.message;
-      toast.error(msg || "Failed to add comment");
-    } finally {
+  console.log(err.response);
+  console.log(err.response.data);
+
+  const msg =
+    err?.response?.data?.message ||
+    err?.response?.data?.error ||
+    err?.message;
+
+  toast.error(msg || "Failed to add comment");
+}finally {
       setSubmitting(false);
     }
   };

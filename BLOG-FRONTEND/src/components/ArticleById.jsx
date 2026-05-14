@@ -180,17 +180,21 @@ function ArticleById() {
           </h2>
 
           {article.comments.map((comment) => (
+            
             <div
-              className="bg-[#088395]/20 border border-[#088395]/30 p-6 rounded-2xl mt-4"
+              className="bg-white/5 border border-white/10 p-6 rounded-2xl mt-4"
               key={comment?._id || comment?.comment}
             >
               <p className="uppercase text-white font-bold mb-3">
-                {comment.user?.email}
-              </p>
+  {comment.user?.firstName?.trim() ||
+    comment.user?.email?.split("@")[0] ||
+    "Anonymous"}
+</p>
 
               <p className="text-white/80">{comment.comment}</p>
             </div>
           ))}
+
         </div>
       )}
 
