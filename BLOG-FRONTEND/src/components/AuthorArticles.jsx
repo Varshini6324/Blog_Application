@@ -34,7 +34,7 @@ function AuthorArticles() {
 
       try {
         const res = await axios.get(
-          `http://localhost:4000/author-api/articles/${authorId}`,
+          `${import.meta.env.VITE_API_BASE_URL}/author-api/articles/${authorId}`,
           {
             withCredentials: true,
           }
