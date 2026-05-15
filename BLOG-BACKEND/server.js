@@ -13,7 +13,8 @@ config(); //process.env
 //Create express application
 const app = exp();
 //use cors middleware
-app.use(cors({ origin: "http://localhost:5173" , credentials:true})); //credentials allow browser to recieve the token
+app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:5173" , credentials:true})); //credentials allow browser to receive the token
+
 //add body parser middleware
 app.use(exp.json());
 //add cookie parser middleware
@@ -28,11 +29,17 @@ app.use("/common-api", commonRouter);
 //connect to db
 const connectDB = async () => {
   try {
-    await connect(process.env.DB_URL);
+    await mongoose.connect(process.env.DB_URL);
+
     console.log("DB connection success");
 
-    //start http server
-    app.listen(process.env.PORT, () => console.log(`server started on port ${process.env.PORT}`));
+    // Start server after DB connects
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      console.log(`Server started on port ${PORT}`);
+    });
+
   } catch (err) {
     console.log("Err in DB connection", err);
   }

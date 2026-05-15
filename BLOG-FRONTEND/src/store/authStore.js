@@ -10,7 +10,7 @@ export const useAuth = create((set)=>({
         const {role,...userCredObj} = userCredWithRole
         try{
             set({loading:true,error:null})
-            let res = await axios.post("http://localhost:4000/common-api/login",userCredObj,{withCredentials:true})
+            let res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/common-api/login`,userCredObj,{withCredentials:true})
             const userPayload = res.data.payload;
             const normalizedUser = {
                 ...userPayload,
@@ -30,7 +30,7 @@ export const useAuth = create((set)=>({
     logout:async()=>{
         try{
             set({loading:true, error:null})
-            await axios.get("http://localhost:4000/common-api/logout",{withCredentials:true})
+            await axios.get(`${import.meta.env.VITE_API_BASE_URL}/common-api/logout`,{withCredentials:true})
             set({loading:false,isAuthenticated:false,currentUser:null})
         }catch(err){
             console.log("error is", err)
@@ -45,7 +45,7 @@ export const useAuth = create((set)=>({
     checkAuth: async () => {
         try {
             set({ loading: true });
-            const res = await axios.get("http://localhost:4000/common-api/check-auth", { withCredentials: true });
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/common-api/check-auth`, { withCredentials: true });
 
             const userPayload = res.data.payload;
             const normalizedUser = {

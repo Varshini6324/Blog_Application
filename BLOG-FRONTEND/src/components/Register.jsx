@@ -49,7 +49,7 @@ function Register() {
       if(role === "user"){
 
         let resObj = await axios.post(
-          "http://localhost:4000/user-api/users",
+          `${import.meta.env.VITE_API_BASE_URL}/user-api/users`,
           formData,
           { 
             headers: { 
@@ -67,7 +67,7 @@ function Register() {
       if(role === "author"){
 
         let resObj = await axios.post(
-          "http://localhost:4000/author-api/users",
+          `${import.meta.env.VITE_API_BASE_URL}/author-api/users`,
           formData,
           { 
             headers: { 

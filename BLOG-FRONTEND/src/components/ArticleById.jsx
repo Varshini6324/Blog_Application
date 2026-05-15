@@ -40,7 +40,7 @@ function ArticleById() {
 
       try {
         const res = await axios.get(
-          `http://localhost:4000/user-api/articles/${id}`,
+          `${import.meta.env.VITE_API_BASE_URL}/user-api/articles/${id}`, 
           {
             withCredentials: true,
           }
@@ -81,7 +81,7 @@ function ArticleById() {
 
     try {
       const res = await axios.patch(
-        `http://localhost:4000/author-api/articles/${id}/status`,
+        `${import.meta.env.VITE_API_BASE_URL}/author-api/articles/${id}/status`,
         { isArticleActive: newStatus },
         { withCredentials: true }
       );

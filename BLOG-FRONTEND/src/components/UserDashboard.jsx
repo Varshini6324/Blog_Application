@@ -25,7 +25,7 @@ function UserDashboard() {
   //read articles of all authors
   const getArticles = async () =>{
     try{
-      let res = await axios.get("http://localhost:4000/user-api/articles", {withCredentials:true})
+      let res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user-api/articles`, { withCredentials: true })
       setArticles(res.data.payload)
     }catch(err){
       console.log(err)

@@ -28,10 +28,14 @@ function AddArticle() {
 
     try {
       toast.loading("Publishing...");
-      const res = await axios.post("http://localhost:4000/author-api/articles", {
-        ...data,
-        author: user._id,
-      }, { withCredentials: true });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/author-api/articles`,
+        {
+          ...data,
+          author: user._id,
+        },
+        { withCredentials: true }
+      );
 
       toast.success("Article published!");
       navigate("/articles");

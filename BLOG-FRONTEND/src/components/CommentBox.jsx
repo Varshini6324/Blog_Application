@@ -30,7 +30,7 @@ function CommentBox({ articleId, onCommentAdded }) {
       setSubmitting(true);
 
       const res = await axios.post(
-        `http://localhost:4000/user-api/articles/${articleId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/user-api/articles/${articleId}`,
         { comment: trimmed, user: user._id },
         { withCredentials: true }
       );
