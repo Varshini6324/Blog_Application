@@ -7,7 +7,7 @@ import { adminRoute } from "./APIs/AdminApi.js";
 import { authorRoute } from "./APIs/AuthorApi.js";
 import { commonRouter } from "./APIs/commonApi.js";
 import cors from "cors";
-
+import mongoose from "mongoose";
 config(); //process.env
 
 //Create express application
