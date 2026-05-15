@@ -31,14 +31,16 @@ function AddArticle() {
       const res = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/author-api/articles`,
         {
-          ...data,
+          title: data.title,
+          category: data.category,
+          content: data.content,
           author: user._id,
         },
         { withCredentials: true }
       );
 
       toast.success("Article published!");
-      navigate("/articles");
+      navigate("/authordashboard/articles");
     } catch (err) {
       toast.error(err.response?.data?.message || "Publish failed");
     }
