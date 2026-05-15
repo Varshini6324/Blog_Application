@@ -29,24 +29,20 @@ app.use("/common-api", commonRouter);
 //connect to db
 const connectDB = async () => {
   try {
-
     if (!process.env.DB_URL) {
       throw new Error("DB_URL is missing in environment variables");
     }
 
     await mongoose.connect(process.env.DB_URL);
-
     console.log("DB connection success");
 
     const PORT = process.env.PORT || 5000;
-
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
     });
-
   } catch (err) {
-    console.log("Err in DB connection");
-    console.log(err);
+    console.error("Err in DB connection:", err);
+    process.exit(1); // Exit with failure so Render knows it crashed
   }
 };
 connectDB();
@@ -98,11 +94,14 @@ app.use((err, req, res, next) => {
     message: "error occurred",
     error: "Server side error",
   });
-  process.on("uncaughtException", (err) => {
-  console.log("UNCAUGHT EXCEPTION:", err);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+  process.exit(1);
 });
 
 process.on("unhandledRejection", (err) => {
-  console.log("UNHANDLED REJECTION:", err);
-});
+  console.error("UNHANDLED REJECTION:", err);
+  process.exit(1);
 });
