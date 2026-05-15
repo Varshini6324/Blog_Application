@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router";
-import { pageWrapper, navLinkClass, navLinkActiveClass, divider } from "../styles/common";
+import { pageWrapper, divider } from "../styles/common";
 
 function AuthorProfile() {
   return (
@@ -8,20 +8,28 @@ function AuthorProfile() {
       <div className="flex gap-6 mb-6">
         <NavLink
           to="articles"
-          className={({ isActive }) => (isActive ? navLinkActiveClass : navLinkClass)}
+          className={({ isActive }) =>
+            isActive
+              ? "text-[0.8rem] text-[#088395] bg-white px-3 py-1.5 rounded-full font-semibold transition"
+              : "text-[0.8rem] text-white/70 hover:text-white transition-colors font-normal"
+          }
         >
           Articles
         </NavLink>
 
         <NavLink
           to="addarticle"
-          className={({ isActive }) => (isActive ? navLinkActiveClass : navLinkClass)}
+          className={({ isActive }) =>
+            isActive
+              ? "text-[0.8rem] text-[#088395] bg-white px-3 py-1.5 rounded-full font-semibold transition"
+              : "text-[0.8rem] text-white/70 hover:text-white transition-colors font-normal"
+          }
         >
           Write Article
         </NavLink>
       </div>
 
-      <div className={divider}></div>
+      <div className="border-t border-white/10 my-10"></div>
 
       {/* Nested route content */}
       <Outlet />
