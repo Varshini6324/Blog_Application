@@ -35,17 +35,18 @@ const connectDB = async () => {
 
     await mongoose.connect(process.env.DB_URL);
     console.log("DB connection success");
-
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server started on port ${PORT}`);
-    });
   } catch (err) {
-    console.error("Err in DB connection:", err);
-    process.exit(1); // Exit with failure so Render knows it crashed
+    console.error("Err in DB connection:", err.message);
+    console.error(err);
+    // Removed process.exit(1) so the app stays alive and flushes the logs to Render
   }
 };
 connectDB();
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+});
 
 app.use((err, req, res, next) => {
 
