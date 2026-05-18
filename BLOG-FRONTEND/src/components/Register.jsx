@@ -149,7 +149,7 @@ function Register() {
         <input
         type="password"
         placeholder="Password"
-        {...register("password",{required:true,minLength:6})}
+        {...register("password",{required:true,minLength:4})}
         className="border w-full p-2"
         />
 
